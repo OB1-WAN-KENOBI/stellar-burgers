@@ -4,20 +4,25 @@ import styles from './app.module.css';
 
 import { AppHeader } from '@components';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { IngredientDetails, OrderInfo } from '@components';
-import { Modal } from '@components/modal/modal';
-import { useCallback, useEffect } from 'react';
+import { IngredientDetails, OrderInfo, Modal } from '@components';
+import { useCallback, useEffect, ReactElement } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
 import { Preloader } from '@ui';
 import { fetchUser } from '../../services/slices/authSlice';
+import type { RootState } from '../../services/store';
 
-const ProtectedRoute = ({ element, isAuth, isAuthChecked }: { element: JSX.Element; isAuth: boolean; isAuthChecked: boolean }) => {
+const ProtectedRoute = ({ element, isAuth, isAuthChecked }: { element: ReactElement; isAuth: boolean; isAuthChecked: boolean }) => {
   if (!isAuthChecked) return <Preloader />;
   return isAuth ? element : <Navigate to="/login" replace />;
 };
 
+const GuestRoute = ({ element, isAuth, isAuthChecked }: { element: ReactElement; isAuth: boolean; isAuthChecked: boolean }) => {
+  if (!isAuthChecked) return <Preloader />;
+  return isAuth ? <Navigate to="/" replace /> : element;
+};
+
 const App = () => {
-  const { user, isAuthChecked } = useSelector((state) => state.auth);
+  const { user, isAuthChecked } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -36,10 +41,10 @@ const App = () => {
       <Routes>
         <Route path="/" element={<ConstructorPage />} />
         <Route path="/feed" element={<Feed />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/login" element={<GuestRoute isAuthChecked={isAuthChecked} isAuth={Boolean(user)} element={<Login />} />} />
+        <Route path="/register" element={<GuestRoute isAuthChecked={isAuthChecked} isAuth={Boolean(user)} element={<Register />} />} />
+        <Route path="/forgot-password" element={<GuestRoute isAuthChecked={isAuthChecked} isAuth={Boolean(user)} element={<ForgotPassword />} />} />
+        <Route path="/reset-password" element={<GuestRoute isAuthChecked={isAuthChecked} isAuth={Boolean(user)} element={<ResetPassword />} />} />
         <Route path="/profile" element={<ProtectedRoute isAuthChecked={isAuthChecked} isAuth={Boolean(user)} element={<Profile />} />} />
         <Route path="/profile/orders" element={<ProtectedRoute isAuthChecked={isAuthChecked} isAuth={Boolean(user)} element={<ProfileOrders />} />} />
         <Route path="*" element={<NotFound404 />} />
