@@ -1,7 +1,7 @@
 import { ProfileUI } from '@ui-pages';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
-import { logout, updateUser } from '../../services/slices/authSlice';
+import { updateUser } from '../../services/slices/authSlice';
 
 export const Profile: FC = () => {
   const dispatch = useDispatch();
@@ -44,10 +44,6 @@ export const Profile: FC = () => {
     });
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormValue((prevState) => ({
       ...prevState,
@@ -62,7 +58,7 @@ export const Profile: FC = () => {
       handleCancel={handleCancel}
       handleSubmit={handleSubmit}
       handleInputChange={handleInputChange}
-      handleLogout={handleLogout}
+      updateUserError={undefined}
     />
   );
 

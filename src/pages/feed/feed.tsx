@@ -3,7 +3,11 @@ import { FeedUI } from '@ui-pages';
 import { TOrder } from '@utils-types';
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
-import { fetchFeed, setFeedRealtime, clearFeed } from '../../services/slices/feedSlice';
+import {
+  fetchFeed,
+  setFeedRealtime,
+  clearFeed
+} from '../../services/slices/feedSlice';
 
 export const Feed: FC = () => {
   const dispatch = useDispatch();
@@ -20,7 +24,13 @@ export const Feed: FC = () => {
       try {
         const data = JSON.parse(event.data);
         if (data?.success && data.orders) {
-          dispatch(setFeedRealtime({ orders: data.orders, total: data.total, totalToday: data.totalToday }));
+          dispatch(
+            setFeedRealtime({
+              orders: data.orders,
+              total: data.total,
+              totalToday: data.totalToday
+            })
+          );
         }
       } catch {}
     };
@@ -34,5 +44,10 @@ export const Feed: FC = () => {
     return <Preloader />;
   }
 
-  return <FeedUI orders={orders as TOrder[]} handleGetFeeds={() => dispatch(fetchFeed())} />;
+  return (
+    <FeedUI
+      orders={orders as TOrder[]}
+      handleGetFeeds={() => dispatch(fetchFeed())}
+    />
+  );
 };

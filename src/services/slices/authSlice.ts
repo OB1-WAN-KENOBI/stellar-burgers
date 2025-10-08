@@ -1,6 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
-import { getUserApi, loginUserApi, logoutApi, registerUserApi, updateUserApi, type TLoginData, type TRegisterData } from '@api';
+import {
+  getUserApi,
+  loginUserApi,
+  logoutApi,
+  registerUserApi,
+  updateUserApi,
+  type TLoginData,
+  type TRegisterData
+} from '@api';
 
 type AuthState = {
   user: TUser | null;
@@ -21,24 +29,33 @@ export const fetchUser = createAsyncThunk('auth/fetchUser', async () => {
   return res.user;
 });
 
-export const registerUser = createAsyncThunk('auth/register', async (data: TRegisterData) => {
-  const res = await registerUserApi(data);
-  localStorage.setItem('refreshToken', res.refreshToken);
-  document.cookie = `accessToken=${res.accessToken}`;
-  return res.user;
-});
+export const registerUser = createAsyncThunk(
+  'auth/register',
+  async (data: TRegisterData) => {
+    const res = await registerUserApi(data);
+    localStorage.setItem('refreshToken', res.refreshToken);
+    document.cookie = `accessToken=${res.accessToken}`;
+    return res.user;
+  }
+);
 
-export const loginUser = createAsyncThunk('auth/login', async (data: TLoginData) => {
-  const res = await loginUserApi(data);
-  localStorage.setItem('refreshToken', res.refreshToken);
-  document.cookie = `accessToken=${res.accessToken}`;
-  return res.user;
-});
+export const loginUser = createAsyncThunk(
+  'auth/login',
+  async (data: TLoginData) => {
+    const res = await loginUserApi(data);
+    localStorage.setItem('refreshToken', res.refreshToken);
+    document.cookie = `accessToken=${res.accessToken}`;
+    return res.user;
+  }
+);
 
-export const updateUser = createAsyncThunk('auth/update', async (data: Partial<TRegisterData>) => {
-  const res = await updateUserApi(data);
-  return res.user;
-});
+export const updateUser = createAsyncThunk(
+  'auth/update',
+  async (data: Partial<TRegisterData>) => {
+    const res = await updateUserApi(data);
+    return res.user;
+  }
+);
 
 export const logout = createAsyncThunk('auth/logout', async () => {
   await logoutApi();
@@ -70,10 +87,13 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state, action: PayloadAction<TUser>) => {
-        state.user = action.payload;
-        state.loading = false;
-      })
+      .addCase(
+        registerUser.fulfilled,
+        (state, action: PayloadAction<TUser>) => {
+          state.user = action.payload;
+          state.loading = false;
+        }
+      )
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || null;

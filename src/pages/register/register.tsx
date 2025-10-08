@@ -16,7 +16,7 @@ export const Register: FC = () => {
     dispatch(registerUser({ name: userName, email, password }));
   };
 
-  if (user) return <Navigate to="/" replace />;
+  if (user) return <Navigate to='/' replace />;
 
   return (
     <RegisterUI

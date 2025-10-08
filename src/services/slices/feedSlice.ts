@@ -29,7 +29,11 @@ const feedSlice = createSlice({
   reducers: {
     setFeedRealtime(
       state,
-      action: PayloadAction<{ orders: TOrder[]; total: number; totalToday: number }>
+      action: PayloadAction<{
+        orders: TOrder[];
+        total: number;
+        totalToday: number;
+      }>
     ) {
       state.orders = action.payload.orders;
       state.total = action.payload.total;
@@ -51,7 +55,11 @@ const feedSlice = createSlice({
         fetchFeed.fulfilled,
         (
           state,
-          action: PayloadAction<{ orders: TOrder[]; total: number; totalToday: number }>
+          action: PayloadAction<{
+            orders: TOrder[];
+            total: number;
+            totalToday: number;
+          }>
         ) => {
           state.orders = action.payload.orders;
           state.total = action.payload.total;

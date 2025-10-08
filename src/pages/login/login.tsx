@@ -15,7 +15,7 @@ export const Login: FC = () => {
     dispatch(loginUser({ email, password }));
   };
 
-  if (user) return <Navigate to="/" replace />;
+  if (user) return <Navigate to='/' replace />;
 
   return (
     <LoginUI

@@ -2,7 +2,11 @@ import { ProfileOrdersUI } from '@ui-pages';
 import { TOrder } from '@utils-types';
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
-import { fetchOrders, setOrdersRealtime, clearOrders } from '../../services/slices/ordersSlice';
+import {
+  fetchOrders,
+  setOrdersRealtime,
+  clearOrders
+} from '../../services/slices/ordersSlice';
 import { getCookie } from '../../utils/cookie';
 
 export const ProfileOrders: FC = () => {
@@ -17,7 +21,9 @@ export const ProfileOrders: FC = () => {
   useEffect(() => {
     const token = getCookie('accessToken');
     if (!token) return;
-    const ws = new WebSocket(`wss://norma.nomoreparties.space/orders?token=${token.replace('Bearer ', '')}`);
+    const ws = new WebSocket(
+      `wss://norma.nomoreparties.space/orders?token=${token.replace('Bearer ', '')}`
+    );
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
