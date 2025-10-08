@@ -29,7 +29,7 @@ export const fetchOrderByNumber = createAsyncThunk(
   'feed/fetchOrderByNumber',
   async (number: number) => {
     const res = await getOrderByNumberApi(number);
-    return res;
+    return res.orders[0]; // Возвращаем первый (и единственный) заказ
   }
 );
 
