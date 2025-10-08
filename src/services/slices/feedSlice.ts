@@ -26,7 +26,21 @@ export const fetchFeed = createAsyncThunk('feed/fetch', async () => {
 const feedSlice = createSlice({
   name: 'feed',
   initialState,
-  reducers: {},
+  reducers: {
+    setFeedRealtime(
+      state,
+      action: PayloadAction<{ orders: TOrder[]; total: number; totalToday: number }>
+    ) {
+      state.orders = action.payload.orders;
+      state.total = action.payload.total;
+      state.totalToday = action.payload.totalToday;
+    },
+    clearFeed(state) {
+      state.orders = [];
+      state.total = 0;
+      state.totalToday = 0;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchFeed.pending, (state) => {
@@ -52,4 +66,5 @@ const feedSlice = createSlice({
   }
 });
 
+export const { setFeedRealtime, clearFeed } = feedSlice.actions;
 export default feedSlice.reducer;
