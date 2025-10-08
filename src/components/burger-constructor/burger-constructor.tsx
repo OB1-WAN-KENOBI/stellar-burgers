@@ -9,21 +9,23 @@ import { Navigate } from 'react-router-dom';
 export const BurgerConstructor: FC = () => {
   const constructorItems = useSelector((s) => s.burgerConstructor);
   const { user } = useSelector((s) => s.auth);
-  const { loading: orderLoading, current: orderData } = useSelector((s) => s.orders);
+  const { loading: orderLoading, current: orderData } = useSelector(
+    (s) => s.orders
+  );
   const dispatch = useDispatch();
   const [showOrderModal, setShowOrderModal] = useState(false);
 
   const onOrderClick = async () => {
     if (!constructorItems?.bun || orderLoading) return;
-    
+
     if (!user) {
       // Перенаправляем на логин если не авторизован
-      return <Navigate to="/login" replace />;
+      return <Navigate to='/login' replace />;
     }
 
     const ingredients = [
       constructorItems.bun._id,
-      ...constructorItems.ingredients.map(ing => ing._id),
+      ...constructorItems.ingredients.map((ing) => ing._id),
       constructorItems.bun._id
     ];
 

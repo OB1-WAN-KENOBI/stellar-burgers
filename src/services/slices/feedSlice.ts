@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
-import { getFeedsApi } from '@api';
+import { getFeedsApi, getOrderByNumberApi } from '@api';
 
 type FeedState = {
   orders: TOrder[];
   total: number;
   totalToday: number;
+  current: TOrder | null;
   loading: boolean;
   error: string | null;
 };
@@ -14,6 +15,7 @@ const initialState: FeedState = {
   orders: [],
   total: 0,
   totalToday: 0,
+  current: null,
   loading: false,
   error: null
 };
@@ -22,6 +24,14 @@ export const fetchFeed = createAsyncThunk('feed/fetch', async () => {
   const res = await getFeedsApi();
   return res;
 });
+
+export const fetchOrderByNumber = createAsyncThunk(
+  'feed/fetchOrderByNumber',
+  async (number: number) => {
+    const res = await getOrderByNumberApi(number);
+    return res;
+  }
+);
 
 const feedSlice = createSlice({
   name: 'feed',
@@ -43,6 +53,7 @@ const feedSlice = createSlice({
       state.orders = [];
       state.total = 0;
       state.totalToday = 0;
+      state.current = null;
     }
   },
   extraReducers: (builder) => {
@@ -68,6 +79,18 @@ const feedSlice = createSlice({
         }
       )
       .addCase(fetchFeed.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || null;
+      })
+      .addCase(fetchOrderByNumber.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchOrderByNumber.fulfilled, (state, action) => {
+        state.current = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchOrderByNumber.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || null;
       });
