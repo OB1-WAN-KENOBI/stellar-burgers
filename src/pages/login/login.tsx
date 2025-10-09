@@ -2,10 +2,11 @@ import { FC, SyntheticEvent, useState } from 'react';
 import { LoginUI } from '@ui-pages';
 import { useDispatch, useSelector } from '../../services/store';
 import { loginUser } from '../../services/slices/authSlice';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 export const Login: FC = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const { user, loading, error } = useSelector((s) => s.auth);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,7 +16,11 @@ export const Login: FC = () => {
     dispatch(loginUser({ email, password }));
   };
 
-  if (user) return <Navigate to='/' replace />;
+  if (user) {
+    // Возвращаем пользователя на страницу, с которой он пришел, или на главную
+    const from = location.state?.from || '/';
+    return <Navigate to={from} replace />;
+  }
 
   return (
     <LoginUI

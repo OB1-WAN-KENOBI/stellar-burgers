@@ -3,18 +3,31 @@ import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 import { useDispatch, useSelector } from '../../services/store';
-import { fetchOrderByNumber } from '../../services/slices/feedSlice';
-import { useParams } from 'react-router-dom';
+import { fetchOrderByNumber as fetchFeedOrderByNumber } from '../../services/slices/feedSlice';
+import { fetchOrderByNumber as fetchOrdersOrderByNumber } from '../../services/slices/ordersSlice';
+import { useParams, useLocation } from 'react-router-dom';
 
 export const OrderInfo: FC = () => {
   const dispatch = useDispatch();
   const { number } = useParams();
-  const orderData = useSelector((s) => s.feed.current);
+  const location = useLocation();
   const ingredients: TIngredient[] = useSelector((s) => s.ingredients.items);
 
+  // Определяем, откуда загружать данные в зависимости от пути
+  const isProfileOrder = location.pathname.includes('/profile/orders/');
+  const orderData = useSelector((s) =>
+    isProfileOrder ? s.orders.current : s.feed.current
+  );
+
   useEffect(() => {
-    if (number) dispatch(fetchOrderByNumber(Number(number)));
-  }, [dispatch, number]);
+    if (number) {
+      if (isProfileOrder) {
+        dispatch(fetchOrdersOrderByNumber(Number(number)));
+      } else {
+        dispatch(fetchFeedOrderByNumber(Number(number)));
+      }
+    }
+  }, [dispatch, number, isProfileOrder]);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {

@@ -4,7 +4,7 @@ import { BurgerConstructorUI } from '@ui';
 import { useSelector, useDispatch } from '../../services/store';
 import { createOrder } from '../../services/slices/ordersSlice';
 import { resetConstructor } from '../../services/slices/constructorSlice';
-import { Navigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
   const constructorItems = useSelector((s) => s.burgerConstructor);
@@ -13,14 +13,17 @@ export const BurgerConstructor: FC = () => {
     (s) => s.orders
   );
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [showOrderModal, setShowOrderModal] = useState(false);
 
   const onOrderClick = async () => {
     if (!constructorItems?.bun || orderLoading) return;
 
     if (!user) {
-      // Перенаправляем на логин если не авторизован
-      return <Navigate to='/login' replace />;
+      // Сохраняем текущее состояние конструктора и перенаправляем на логин
+      navigate('/login', { state: { from: location.pathname } });
+      return;
     }
 
     const ingredients = [
