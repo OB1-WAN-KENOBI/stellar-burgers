@@ -184,6 +184,42 @@ const App = () => {
           />
         </Routes>
       )}
+
+      {/* Модальные маршруты для прямой навигации (после перезагрузки) */}
+      {!state?.background && (
+        <Routes>
+          <Route
+            path='/feed/:number'
+            element={
+              <Modal title='' onClose={handleCloseModal}>
+                <OrderInfo />
+              </Modal>
+            }
+          />
+          <Route
+            path='/ingredients/:id'
+            element={
+              <Modal title='Детали ингредиента' onClose={handleCloseModal}>
+                <IngredientDetails />
+              </Modal>
+            }
+          />
+          <Route
+            path='/profile/orders/:number'
+            element={
+              <ProtectedRoute
+                isAuthChecked={isAuthChecked}
+                isAuth={Boolean(user)}
+                element={
+                  <Modal title='' onClose={handleCloseModal}>
+                    <OrderInfo />
+                  </Modal>
+                }
+              />
+            }
+          />
+        </Routes>
+      )}
     </div>
   );
 };
