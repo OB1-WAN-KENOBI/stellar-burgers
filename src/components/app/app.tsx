@@ -25,6 +25,7 @@ import { useCallback, useEffect, ReactElement } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
 import { Preloader } from '@ui';
 import { fetchUser } from '../../services/slices/authSlice';
+import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 import type { RootState } from '../../services/store';
 
 const ProtectedRoute = ({
@@ -63,6 +64,8 @@ const App = () => {
     if (!isAuthChecked) {
       dispatch(fetchUser());
     }
+    // Загружаем ингредиенты при инициализации приложения
+    dispatch(fetchIngredients());
   }, [dispatch, isAuthChecked]);
 
   const handleCloseModal = useCallback(() => {
@@ -174,15 +177,9 @@ const App = () => {
           <Route
             path='/profile/orders/:number'
             element={
-              <ProtectedRoute
-                isAuthChecked={isAuthChecked}
-                isAuth={Boolean(user)}
-                element={
-                  <Modal title='' onClose={handleCloseModal}>
-                    <OrderInfo />
-                  </Modal>
-                }
-              />
+              <Modal title='' onClose={handleCloseModal}>
+                <OrderInfo />
+              </Modal>
             }
           />
         </Routes>

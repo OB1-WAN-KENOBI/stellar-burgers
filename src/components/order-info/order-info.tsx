@@ -12,6 +12,7 @@ export const OrderInfo: FC = () => {
   const { number } = useParams();
   const location = useLocation();
   const ingredients: TIngredient[] = useSelector((s) => s.ingredients.items);
+  const ingredientsLoading = useSelector((s) => s.ingredients.loading);
 
   // Определяем, откуда загружать данные в зависимости от пути
   const isProfileOrder = location.pathname.includes('/profile/orders/');
@@ -31,7 +32,7 @@ export const OrderInfo: FC = () => {
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
-    if (!orderData || !ingredients.length) return null;
+    if (!orderData || !ingredients.length || ingredientsLoading) return null;
 
     const date = new Date(orderData.createdAt);
 
@@ -69,9 +70,9 @@ export const OrderInfo: FC = () => {
       date,
       total
     };
-  }, [orderData, ingredients]);
+  }, [orderData, ingredients, ingredientsLoading]);
 
-  if (!orderInfo) {
+  if (!orderInfo || ingredientsLoading) {
     return <Preloader />;
   }
 
